@@ -977,15 +977,138 @@ function bindEvents() {
   });
 }
 
-function initialize() {
+
+let currentUser = null;
+let authMode = "login";
+
+function showAuthScreen(message = "") {
+  const authScreen = document.getElementById("auth-screen");
+  const appLayout = document.querySelector(".app-layout");
+  const authMessage = document.getElementById("auth-message");
+  const authTitle = document.getElementById("auth-title");
+  const authSubmit = document.getElementById("auth-submit");
+  const authToggle = document.getElementById("auth-toggle");
+
+  if (authScreen) authScreen.style.display = "flex";
+  if (appLayout) appLayout.style.display = "none";
+  if (authMessage) authMessage.textContent = message;
+
+  if (authTitle) {
+    authTitle.textContent = authMode === "login" ? "로그인" : "회원가입";
+  }
+
+  if (authSubmit) {
+    authSubmit.textContent = authMode === "login" ? "로그인" : "회원가입";
+  }
+
+  if (authToggle) {
+    authToggle.textContent = authMode === "login" ? "회원가입" : "로그인으로 돌아가기";
+  }
+}
+
+function showAppScreen() {
+  const authScreen = document.getElementById("auth-screen");
+  const appLayout = document.querySelector(".app-layout");
+
+  if (authScreen) authScreen.style.display = "none";
+  if (appLayout) appLayout.style.display = "";
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value;
+  const message = document.getElementById("auth-message");
+  const submit = document.getElementById("auth-submit");
+
+  if (message) message.textContent = "처리 중...";
+  if (submit) submit.disabled = true;
+
+  try {
+    let result;
+
+    if (authMode === "login") {
+      result = await supabaseClient.auth.signInWithPassword({
+        email,
+        password,
+      });
+    } else {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+      });
+    }
+
+    if (result.error) throw result.error;
+
+    if (authMode === "signup" && !result.data.session) {
+      showAuthScreen("가입 요청이 완료됐어요. 이메일 인증을 마친 뒤 로그인해 주세요.");
+      return;
+    }
+
+    currentUser = result.data.user;
+    await startAppForUser();
+  } catch (error) {
+    showAuthScreen(
+      error.message || "로그인 처리 중 문제가 발생했습니다."
+    );
+  } finally {
+    if (submit) submit.disabled = false;
+  }
+}
+
+async function startAppForUser() {
+  if (!currentUser) {
+    showAuthScreen();
+    return;
+  }
+
+  showAppScreen();
+
   bindEvents();
 
-  // Rebuild recurring tasks so that newly opened dates remain consistent.
+  state = loadData();
   state.goals.forEach((goal) => generateGoalTasks(goal));
 
   saveData();
   renderAll();
   setPage("dashboard");
+}
+
+async function initialize() {
+  const authForm = document.getElementById("auth-form");
+  const authToggle = document.getElementById("auth-toggle");
+
+  authForm?.addEventListener("submit", handleAuthSubmit);
+
+  authToggle?.addEventListener("click", () => {
+    authMode = authMode === "login" ? "signup" : "login";
+    showAuthScreen();
+  });
+
+  const { data, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    showAuthScreen("로그인 상태를 확인하지 못했습니다. 새로고침해 주세요.");
+    return;
+  }
+
+  currentUser = data.session?.user || null;
+
+  if (currentUser) {
+    await startAppForUser();
+  } else {
+    showAuthScreen();
+  }
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+
+    if (!currentUser) {
+      showAuthScreen();
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
