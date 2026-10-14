@@ -1,4 +1,3 @@
-```javascript
 // ==========================================
 // MOVA — Turn plans into progress.
 // Goals, recurring schedules, tasks and focus timer
@@ -982,4 +981,3 @@ function initialize() {
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
-```
