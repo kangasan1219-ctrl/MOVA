@@ -1,0 +1,565 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c101b">
+  <meta name="description" content="MOVA - Turn plans into progress. 목표를 계획으로, 계획을 실행으로.">
+
+  <title>MOVA | Turn plans into progress</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+
+<body>
+  <div class="app-layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <a href="#" class="brand" aria-label="MOVA 홈">
+        <span class="brand-symbol">M</span>
+        <span class="brand-name">MOVA</span>
+      </a>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="navigation">
+          <button class="nav-item active" data-page="dashboard">
+            <span class="nav-icon">◫</span>
+            <span>대시보드</span>
+          </button>
+
+          <button class="nav-item" data-page="goals">
+            <span class="nav-icon">◎</span>
+            <span>목표 관리</span>
+          </button>
+
+          <button class="nav-item" data-page="schedule">
+            <span class="nav-icon">▦</span>
+            <span>일정 관리</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-star">✦</div>
+
+        <p class="sidebar-message">
+          작은 행동이 모여<br>
+          큰 변화를 만듭니다.
+        </p>
+
+        <p class="sidebar-description">
+          계획에서 실행까지,<br>
+          MOVA와 함께하세요.
+        </p>
+
+        <div class="storage-status">
+          <span class="status-dot"></span>
+          <span>이 기기에 데이터 저장 중</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+      <!-- 상단 헤더 -->
+      <header class="topbar">
+        <div class="page-heading">
+          <p class="eyebrow">TURN PLANS INTO PROGRESS</p>
+          <h1 id="page-heading">대시보드</h1>
+        </div>
+
+        <div class="topbar-actions">
+          <span class="date-badge" id="header-date"></span>
+
+          <button class="button button-primary" id="new-goal-top">
+            <span>＋</span>
+            새 목표
+          </button>
+        </div>
+      </header>
+
+      <!-- 환영 배너 -->
+      <section class="welcome-banner">
+        <div class="welcome-content">
+          <p class="eyebrow">YOUR FOCUS, YOUR FUTURE</p>
+
+          <h2>
+            계획을 세우는 것에서<br>
+            끝내지 마세요.
+          </h2>
+
+          <p class="welcome-description">
+            오늘의 작은 실행이 내일의 큰 변화를 만듭니다.
+          </p>
+        </div>
+
+        <div class="welcome-decoration" aria-hidden="true">
+          <div class="decoration-ring ring-one"></div>
+          <div class="decoration-ring ring-two"></div>
+          <div class="decoration-core">M</div>
+        </div>
+      </section>
+
+      <!-- 요약 카드 -->
+      <section class="stats-grid" aria-label="오늘의 요약">
+
+        <article class="stat-card">
+          <div class="stat-card-header">
+            <span>진행 중인 목표</span>
+            <span class="stat-icon purple-icon">◎</span>
+          </div>
+
+          <strong class="stat-number" id="metric-goals">0</strong>
+          <p class="stat-caption">현재 집중하고 있는 목표</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-header">
+            <span>오늘의 일정</span>
+            <span class="stat-icon blue-icon">▦</span>
+          </div>
+
+          <strong class="stat-number" id="metric-tasks">0</strong>
+          <p class="stat-caption">오늘 계획한 실행</p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-header">
+            <span>오늘 완료율</span>
+            <span class="stat-icon green-icon">✓</span>
+          </div>
+
+          <strong class="stat-number" id="metric-done">0%</strong>
+          <p class="stat-caption">완료한 일정의 비율</p>
+        </article>
+
+      </section>
+
+      <!-- 대시보드 -->
+      <section id="dashboard-page" class="dashboard-grid">
+
+        <div class="dashboard-main-column">
+
+          <!-- 지금 할 일 -->
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">NEXT ACTION</p>
+                <h3>지금 할 일</h3>
+              </div>
+
+              <button class="text-button" data-goto="schedule">
+                일정 전체 보기 ↗
+              </button>
+            </div>
+
+            <div id="next-action" class="next-action-container"></div>
+
+            <div class="panel-divider"></div>
+
+            <!-- 오늘의 일정 -->
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">TODAY'S PLAN</p>
+                <h3>오늘의 일정</h3>
+              </div>
+
+              <button class="button button-secondary button-small" id="new-task-short">
+                ＋ 일정 추가
+              </button>
+            </div>
+
+            <div id="today-list" class="task-list"></div>
+          </section>
+
+        </div>
+
+        <div class="dashboard-side-column">
+
+          <!-- 목표 미리보기 -->
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">ACTIVE GOALS</p>
+                <h3>나의 목표</h3>
+              </div>
+
+              <button class="text-button" data-goto="goals">
+                전체 보기 ↗
+              </button>
+            </div>
+
+            <div id="goal-preview" class="goal-preview-list"></div>
+
+            <button class="button button-secondary button-full" id="new-goal-bottom">
+              ＋ 새로운 목표 만들기
+            </button>
+          </section>
+
+          <!-- MOVA 메시지 -->
+          <section class="panel principle-panel">
+            <div class="principle-icon">✦</div>
+
+            <p class="eyebrow">MOVA PRINCIPLE</p>
+
+            <h3>
+              완벽하게 시작할 필요는 없습니다.<br>
+              지금 시작하면 됩니다.
+            </h3>
+
+            <p class="principle-description">
+              작게 시작하고, 꾸준히 실행하고,<br>
+              기록을 통해 성장하세요.
+            </p>
+          </section>
+
+        </div>
+      </section>
+
+      <!-- 목표 관리 페이지 -->
+      <section id="goals-page" class="page-section" hidden>
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow">YOUR DIRECTION</p>
+            <h2>목표 관리</h2>
+            <p class="section-description">
+              목표 기간과 반복 조건을 설정하면 일정을 자동으로 생성합니다.
+            </p>
+          </div>
+
+          <button class="button button-primary" id="new-goal-page">
+            ＋ 목표 만들기
+          </button>
+        </div>
+
+        <div id="goals-list" class="goals-grid"></div>
+      </section>
+
+      <!-- 일정 관리 페이지 -->
+      <section id="schedule-page" class="page-section" hidden>
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow">YOUR EXECUTION PLAN</p>
+            <h2>일정 관리</h2>
+            <p class="section-description">
+              목표에 연결된 일정과 직접 추가한 일정을 관리하세요.
+            </p>
+          </div>
+
+          <button class="button button-primary" id="new-task-page">
+            ＋ 일정 추가
+          </button>
+        </div>
+
+        <section class="panel schedule-panel">
+          <div class="schedule-toolbar">
+            <label for="schedule-date">확인할 날짜</label>
+            <input type="date" id="schedule-date">
+          </div>
+
+          <div id="schedule-list" class="task-list"></div>
+        </section>
+      </section>
+
+      <!-- 하단 -->
+      <footer class="footer">
+        <strong>MOVA</strong>
+        <span>Turn plans into progress.</span>
+        <span>작은 행동부터 시작하세요.</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- 목표 생성 및 수정 창 -->
+  <dialog id="goal-dialog" class="modal">
+    <form id="goal-form">
+
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">DEFINE YOUR DIRECTION</p>
+          <h2 id="goal-modal-title">새 목표 만들기</h2>
+        </div>
+
+        <button type="button" class="close-button" data-close="goal-dialog" aria-label="닫기">
+          ×
+        </button>
+      </div>
+
+      <label class="field-label" for="goal-name">
+        목표 이름 <span>*</span>
+      </label>
+
+      <input
+        id="goal-name"
+        name="name"
+        type="text"
+        maxlength="100"
+        required
+        placeholder="예: 매일 영어 공부하기"
+      >
+
+      <label class="field-label" for="goal-description">목표 설명</label>
+
+      <textarea
+        id="goal-description"
+        name="description"
+        rows="3"
+        maxlength="400"
+        placeholder="이 목표를 이루고 싶은 이유를 적어보세요."
+      ></textarea>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="goal-start">
+            시작일 <span>*</span>
+          </label>
+          <input id="goal-start" name="startDate" type="date" required>
+        </div>
+
+        <div>
+          <label class="field-label" for="goal-end">
+            종료일 <span>*</span>
+          </label>
+          <input id="goal-end" name="endDate" type="date" required>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="goal-frequency">반복 주기</label>
+          <select id="goal-frequency" name="frequency">
+            <option value="daily">매일</option>
+            <option value="weekdays">평일마다</option>
+            <option value="custom">요일 직접 선택</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label" for="goal-duration">1회 실행 시간</label>
+          <select id="goal-duration" name="duration">
+            <option value="15">15분</option>
+            <option value="25" selected>25분</option>
+            <option value="30">30분</option>
+            <option value="45">45분</option>
+            <option value="60">60분</option>
+            <option value="90">90분</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="weekday-picker" class="weekday-picker" hidden>
+        <label class="field-label">반복할 요일</label>
+
+        <div class="weekday-options">
+          <label><input type="checkbox" value="1" checked> 월</label>
+          <label><input type="checkbox" value="2" checked> 화</label>
+          <label><input type="checkbox" value="3" checked> 수</label>
+          <label><input type="checkbox" value="4" checked> 목</label>
+          <label><input type="checkbox" value="5" checked> 금</label>
+          <label><input type="checkbox" value="6"> 토</label>
+          <label><input type="checkbox" value="0"> 일</label>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="goal-time">시작 시간</label>
+          <input id="goal-time" name="time" type="time" value="19:00" required>
+        </div>
+
+        <div>
+          <label class="field-label" for="goal-category">분류</label>
+          <select id="goal-category" name="category">
+            <option value="personal">개인</option>
+            <option value="study">공부</option>
+            <option value="work">작업</option>
+            <option value="health">건강</option>
+            <option value="life">생활</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="form-hint">
+        목표를 저장하면 기간과 반복 주기에 맞춰 일정이 자동으로 생성됩니다.
+      </p>
+
+      <p id="goal-error" class="error-message" role="alert"></p>
+
+      <div class="modal-actions">
+        <button type="button" class="button button-secondary" data-close="goal-dialog">
+          취소
+        </button>
+
+        <button type="submit" class="button button-primary">
+          목표 저장하기
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
+  <!-- 일정 추가 창 -->
+  <dialog id="task-dialog" class="modal">
+    <form id="task-form">
+
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">MAKE IT HAPPEN</p>
+          <h2 id="task-modal-title">새 일정 추가</h2>
+        </div>
+
+        <button type="button" class="close-button" data-close="task-dialog" aria-label="닫기">
+          ×
+        </button>
+      </div>
+
+      <label class="field-label" for="task-name">
+        일정 이름 <span>*</span>
+      </label>
+
+      <input
+        id="task-name"
+        name="title"
+        type="text"
+        maxlength="100"
+        required
+        placeholder="예: 영어 단어 20개 복습하기"
+      >
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="task-date">날짜 <span>*</span></label>
+          <input id="task-date" name="date" type="date" required>
+        </div>
+
+        <div>
+          <label class="field-label" for="task-goal">연결할 목표</label>
+          <select id="task-goal" name="goalId">
+            <option value="">연결할 목표 없음</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label class="field-label" for="task-start">시작 시간</label>
+          <input id="task-start" name="start" type="time" value="19:00" required>
+        </div>
+
+        <div>
+          <label class="field-label" for="task-minutes">예상 소요 시간</label>
+          <select id="task-minutes" name="minutes">
+            <option value="5">5분</option>
+            <option value="10">10분</option>
+            <option value="15">15분</option>
+            <option value="25" selected>25분</option>
+            <option value="30">30분</option>
+            <option value="45">45분</option>
+            <option value="60">60분</option>
+            <option value="90">90분</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field-label" for="task-notes">메모</label>
+
+      <textarea
+        id="task-notes"
+        name="notes"
+        rows="3"
+        maxlength="400"
+        placeholder="이번 일정에서 달성할 내용을 적어보세요."
+      ></textarea>
+
+      <p id="task-error" class="error-message" role="alert"></p>
+
+      <div class="modal-actions">
+        <button type="button" class="button button-secondary" data-close="task-dialog">
+          취소
+        </button>
+
+        <button type="submit" class="button button-primary">
+          일정 저장하기
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
+  <!-- 실행 모드 창 -->
+  <dialog id="action-dialog" class="modal action-modal">
+    <form id="action-form">
+
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">ACTION MODE</p>
+          <h2 id="action-title">지금 시작하기</h2>
+        </div>
+
+        <button type="button" class="close-button" data-close="action-dialog" aria-label="닫기">
+          ×
+        </button>
+      </div>
+
+      <p id="action-context" class="section-description"></p>
+
+      <div class="action-tip">
+        <span class="action-tip-icon">↗</span>
+        <div>
+          <strong>첫 단계만 정해 보세요.</strong>
+          <p>큰 목표도 작은 행동 하나에서 시작됩니다.</p>
+        </div>
+      </div>
+
+      <label class="field-label" for="action-step">첫 번째 작은 행동</label>
+
+      <input
+        id="action-step"
+        type="text"
+        maxlength="160"
+        placeholder="예: 자료를 열고 첫 문단 읽기"
+      >
+
+      <div class="timer-box">
+        <div>
+          <p class="eyebrow">FOCUS TIMER</p>
+          <strong id="timer-display">05:00</strong>
+          <p class="timer-description">5분 집중으로 시작해 보세요.</p>
+        </div>
+
+        <button type="button" class="button button-secondary" id="timer-toggle">
+          5분 시작
+        </button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="button button-secondary" data-close="action-dialog">
+          닫기
+        </button>
+
+        <button type="submit" class="button button-primary">
+          실행 기록하기
+        </button>
+      </div>
+
+    </form>
+  </dialog>
+
+  <!-- 알림 메시지 -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
+```
