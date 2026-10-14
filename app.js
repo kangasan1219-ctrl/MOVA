@@ -9,6 +9,14 @@ const $$ = (selector, parent = document) =>
 
 const STORAGE_KEY = "mova-app-v1";
 
+const SUPABASE_URL = "https://otfzrnpbcjzpmrxfycau.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_RCO9uIQIIR_thUFE4PblKA_BE3A8WEq";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
 const CATEGORY_NAMES = {
   personal: "개인",
   study: "학습",
