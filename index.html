@@ -559,5 +559,39 @@
   <!-- 알림 메시지 -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+<!-- MOVA 로그인 화면 -->
+<div id="auth-screen" class="auth-screen" style="display: none;">
+  <div class="auth-card">
+    <h1>MOVA</h1>
+    <p>Turn plans into progress.</p>
+
+    <h2 id="auth-title">로그인</h2>
+
+    <form id="auth-form">
+      <label for="auth-email">이메일</label>
+      <input
+        id="auth-email"
+        type="email"
+        placeholder="이메일 주소"
+        required
+      />
+
+      <label for="auth-password">비밀번호</label>
+      <input
+        id="auth-password"
+        type="password"
+        placeholder="비밀번호"
+        minlength="6"
+        required
+      />
+
+      <button id="auth-submit" type="submit">로그인</button>
+      <button id="auth-toggle" type="button">회원가입</button>
+
+      <p id="auth-message" role="status"></p>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
