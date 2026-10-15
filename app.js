@@ -86,14 +86,42 @@ let timerRunning = false;
 let toastTimeout = null;
 let currentPage = "dashboard";
 
+
+let cloudSaveTimer = null;
+let cloudSaveVersion = 0;
+let cloudSaveQueue = Promise.resolve();
+
 function saveData() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(
+      `${STORAGE_KEY}-${currentUser?.id || "guest"}`,
+      JSON.stringify(state)
+    );
   } catch (error) {
     console.error("MOVA 데이터를 저장하지 못했습니다.", error);
-    showToast("저장 공간을 확인해 주세요.");
+    showToast("브라우저 저장 공간을 확인해 주세요.");
   }
+
+  // 클라우드 저장은 로그인 및 데이터 불러오기를 연결한 뒤 활성화합니다.
+  if (!currentUser || !cloudReady) return;
+
+  clearTimeout(cloudSaveTimer);
+
+  const version = ++cloudSaveVersion;
+
+  cloudSaveTimer = setTimeout(() => {
+    cloudSaveQueue = cloudSaveQueue
+      .then(() => {
+        if (version !== cloudSaveVersion) return;
+        return syncStateToCloud();
+      })
+      .catch((error) => {
+        console.error("MOVA 클라우드 저장 실패:", error);
+        showToast("클라우드 저장에 실패했습니다. 다시 시도해 주세요.");
+      });
+  }, 500);
 }
+
 
 function getGoal(goalId) {
   return state.goals.find((goal) => goal.id === goalId);
